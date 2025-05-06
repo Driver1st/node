@@ -1,0 +1,11 @@
+{
+  "name": "02_environment",
+  "version": "1.0.0",
+  "description": "**Skillbox Node.js, модуль 1**  \r Студент: Антон Прудников",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
