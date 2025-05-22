@@ -7,7 +7,7 @@ if (args.length === 0) {
   process.exit(1);
 }
 
-const BASE_URL = "https://swapi.dev/api/people/?search=";
+const BASE_URL = "https://www.swapi.tech/";
 
 const fetchPeople = async (query) => {
   const encodedQuery = encodeURIComponent(query);
