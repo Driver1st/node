@@ -7,12 +7,12 @@ if (args.length === 0) {
   process.exit(1);
 }
 
-const BASE_URL = "https://www.swapi.tech/";
+const BASE_URL = "https://www.swapi.tech/api/people";
 
 const fetchPeople = async (query) => {
   const encodedQuery = encodeURIComponent(query);
   try {
-    const response = await axios.get(`${BASE_URL}${encodedQuery}`);
+    const response = await axios.get(`${BASE_URL}?search=${encodedQuery}`);
     return response.data.results || [];
   } catch (error) {
     console.error(`Error while searching for "${query}":`, error.message);
@@ -20,40 +20,52 @@ const fetchPeople = async (query) => {
   }
 };
 
-const main = async () => {
-  const promises = args.map((query) => fetchPeople(query));
-  const results = await Promise.all(promises);
+const fetchPersonDetails = async (url) => {
+  try {
+    const response = await axios.get(url);
+    return response.data.result.properties;
+  } catch (error) {
+    console.error(`Error fetching details from ${url}:`, error.message);
+    return null;
+  }
+};
 
-  const allPeople = [];
-  results.forEach((people, index) => {
-    if (people.length === 0) {
+const main = async () => {
+  const searchResults = await Promise.all(args.map(fetchPeople));
+
+  const allPersonSummaries = [];
+  searchResults.forEach((results, index) => {
+    if (results.length === 0) {
       console.warn(`No results found for '${args[index]}'`);
     } else {
-      allPeople.push(...people);
+      allPersonSummaries.push(...results);
     }
   });
 
-  if (allPeople.length === 0) return;
+  if (allPersonSummaries.length === 0) return;
+
+  const personDetailsList = await Promise.all(allPersonSummaries.map((summary) => fetchPersonDetails(summary.url)));
+
+  const validPeople = personDetailsList.filter((p) => p !== null);
 
   const uniquePeopleMap = new Map();
-  allPeople.forEach((person) => {
+  validPeople.forEach((person) => {
     if (!uniquePeopleMap.has(person.name)) {
       uniquePeopleMap.set(person.name, person);
     }
   });
 
   const uniquePeople = Array.from(uniquePeopleMap.values());
-
   uniquePeople.sort((a, b) => a.name.localeCompare(b.name));
 
   console.log(`\nTotal results: ${uniquePeople.length}.`);
   console.log(`All: ${uniquePeople.map((p) => p.name).join(", ")}.`);
 
-  const withValidHeights = uniquePeople.filter((p) => !isNaN(parseInt(p.height)));
+  const peopleWithValidHeights = uniquePeople.filter((p) => !isNaN(parseInt(p.height)));
 
-  if (withValidHeights.length > 0) {
-    const min = withValidHeights.reduce((min, p) => (+p.height < +min.height ? p : min), withValidHeights[0]);
-    const max = withValidHeights.reduce((max, p) => (+p.height > +max.height ? p : max), withValidHeights[0]);
+  if (peopleWithValidHeights.length > 0) {
+    const min = peopleWithValidHeights.reduce((min, p) => (+p.height < +min.height ? p : min));
+    const max = peopleWithValidHeights.reduce((max, p) => (+p.height > +max.height ? p : max));
 
     console.log(`Min height: ${min.name}, ${min.height} cm.`);
     console.log(`Max height: ${max.name}, ${max.height} cm.`);
