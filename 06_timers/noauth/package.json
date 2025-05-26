@@ -55,8 +55,8 @@
   },
   "homepage": "https://github.com/emirotin/node-template#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "nanoid": "^3.1.10",
-    "nunjucks": "^3.2.1"
+    "express": "^4.21.2",
+    "nanoid": "^3.3.11",
+    "nunjucks": "^3.2.4"
   }
 }

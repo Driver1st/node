@@ -55,10 +55,12 @@
   },
   "homepage": "https://github.com/emirotin/node-template#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
-    "nanoid": "^3.1.10",
-    "nunjucks": "^3.2.1"
+    "cookie-session": "^2.1.0",
+    "express": "^4.21.2",
+    "nanoid": "^3.3.11",
+    "nunjucks": "^3.2.4"
   }
 }
