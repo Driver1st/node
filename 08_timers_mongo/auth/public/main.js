@@ -1,4 +1,3 @@
-      filter: "all",
 (() => {
   const notification = (config) =>
     UIkit.notification({
